@@ -39,21 +39,21 @@ function displayData(data, searchTerm) {
     output.innerHTML = '';
     data.forEach(item => {
         const div = document.createElement('div');
-        let myContent = `
-            Name: ${item.name},
-            Game Series: ${item.gameSeries},
-            Amiibo Series: ${item.amiiboSeries}
-        `;
+        let myName = item.name;
+        let myGameSeries = item.gameSeries;
+        let myAmiiboSeries = item.amiiboSeries;
+
         if (searchTerm) {
-            // Dette funker bare sånn passe
-            // Den roter med store og små bokstaver 
-            // og leter gjennom "lablene" og ikke
-            // bare dataene... mæ fikses! Senere!
-            console.log ("Look for " + searchTerm);
-            
-            let st = new RegExp (searchTerm, "gi");
-            myContent = myContent.replace(st, `<span style="background-color: yellow;">${searchTerm}</span>`);
+            myName = highlightMatches(myName, searchTerm);
+            myGameSeries = highlightMatches(myGameSeries, searchTerm);
+            myAmiiboSeries = highlightMatches(myAmiiboSeries, searchTerm);
         }
+
+        let myContent = `
+            <p>Name: ${myName}</p>
+            <p>Game Series: ${myGameSeries}</p>
+            <p>Amiibo Series: ${myAmiiboSeries}</p>
+        `;
         div.innerHTML = myContent;
 
         // Create an image element for each Amiibo
@@ -78,3 +78,13 @@ document.getElementById('search').addEventListener('input', function(event) {
     // Display the filtered data
     displayData(filteredData, event.target.value);
 });
+
+// Function to wrap matched terms with a span
+function highlightMatches(text, term) {
+    //console.log(text, term)
+    const regex = new RegExp(`(${term})`, 'gi'); // 'g' for global, 'i' for case-insensitive
+    
+    return text.replace(regex, (match) => {
+      return `<span style="background-color: yellow;">${match}</span>`; // Wrap in a span without changing the case
+    });
+  }
