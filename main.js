@@ -1,3 +1,13 @@
+// Register the Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+    .then(function(registration) {
+        console.log('Service Worker registered with scope:', registration.scope);
+    }).catch(function(error) {
+        console.error('Service Worker registration failed:', error);
+    });
+}
+
 // Create a new Web Worker instance
 const worker = new Worker('worker.js');
 // Specify the API URL for fetching the amiibo data
@@ -28,7 +38,14 @@ function displayData(data) {
             Name: ${item.name},
             Game Series: ${item.gameSeries},
             Amiibo Series: ${item.amiiboSeries}
-`;
+        `;
+
+        // Create an image element for each Amiibo
+        const img = document.createElement('img');
+        img.src = item.image; // Amiibo image URL from the API
+        img.alt = item.name;
+
+        div.appendChild(img);
         output.appendChild(div);
     });
 }
